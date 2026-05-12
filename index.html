@@ -8,148 +8,82 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0e0e0e;
-    --surface: #161616;
-    --border: #2a2a2a;
-    --accent: #4db7ff;
-    --accent-dim: #2a7aaa;
-    --text: #e8e8e8;
-    --text-dim: #777;
-    --danger: #ff6b6b;
+    --bg: #0e0e0e; --surface: #161616; --border: #2a2a2a;
+    --accent: #4db7ff; --accent-dim: #2a7aaa;
+    --text: #e8e8e8; --text-dim: #777;
+    --danger: #ff6b6b; --warn: #fbbf24; --ok: #4ade80;
     --radius: 6px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    background: var(--bg); color: var(--text);
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+    min-height: 100vh; display: flex; flex-direction: column;
   }
-
   header {
-    padding: 28px 40px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
+    padding: 28px 40px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: 16px;
   }
-
-  header h1 {
-    font-family: 'Fraunces', serif;
-    font-size: 26px;
-    font-weight: 300;
-    letter-spacing: -0.5px;
-    color: var(--text);
-  }
-
+  header h1 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 300; letter-spacing: -0.5px; }
   header h1 span { color: var(--accent); font-style: italic; }
   header small { color: var(--text-dim); font-size: 11px; }
-
-  .container {
-    display: grid;
-    grid-template-columns: 340px 1fr;
-    flex: 1;
-    min-height: 0;
-  }
+  .container { display: grid; grid-template-columns: 340px 1fr; flex: 1; min-height: 0; }
 
   .sidebar {
-    border-right: 1px solid var(--border);
-    padding: 28px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow-y: auto;
+    border-right: 1px solid var(--border); padding: 24px;
+    display: flex; flex-direction: column; gap: 18px; overflow-y: auto;
   }
-
   .field label {
-    display: block;
-    color: var(--text-dim);
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
+    display: block; color: var(--text-dim); font-size: 10px;
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px;
   }
-
   .field input[type="password"],
   .field select,
-  .field textarea {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    padding: 10px 12px;
-    outline: none;
-    transition: border-color 0.15s;
+  .field textarea,
+  .field input[type="number"] {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text);
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    padding: 10px 12px; outline: none; transition: border-color 0.15s;
   }
-
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus { border-color: var(--accent-dim); }
-
-  .field textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent-dim); }
+  .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
   .field select option { background: #1a1a1a; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   .dropzone {
-    border: 1.5px dashed var(--border);
-    border-radius: var(--radius);
-    padding: 24px 16px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    position: relative;
+    border: 1.5px dashed var(--border); border-radius: var(--radius);
+    padding: 20px 16px; text-align: center; cursor: pointer;
+    transition: border-color 0.2s, background 0.2s; position: relative;
   }
-
-  .dropzone:hover, .dropzone.drag-over {
-    border-color: var(--accent);
-    background: rgba(77,183,255,0.04);
-  }
-
-  .dropzone input[type="file"] {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer;
-  }
-
-  .dropzone .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .dropzone:hover, .dropzone.drag-over { border-color: var(--accent); background: rgba(77,183,255,0.04); }
+  .dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .dropzone .icon { font-size: 24px; margin-bottom: 6px; display: block; }
   .dropzone p { color: var(--text-dim); font-size: 11px; line-height: 1.6; }
   .dropzone p strong { color: var(--text); }
 
-  .file-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
-
+  .file-list { display: flex; flex-direction: column; gap: 5px; max-height: 220px; overflow-y: auto; }
   .file-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 8px 10px;
-    font-size: 11px;
+    display: flex; align-items: center; gap: 8px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 10px; font-size: 11px;
   }
-
   .file-item .fname { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .file-item .fsize { color: var(--text-dim); flex-shrink: 0; }
+  .file-item .fsize { color: var(--text-dim); flex-shrink: 0; font-size: 10px; }
   .file-item .remove {
-    background: none; border: none; color: var(--text-dim); cursor: pointer;
-    padding: 2px; line-height: 1; font-size: 14px; flex-shrink: 0;
+    background: none; border: none; color: var(--text-dim);
+    cursor: pointer; padding: 1px; font-size: 14px; flex-shrink: 0; line-height: 1;
   }
   .file-item .remove:hover { color: var(--danger); }
-  .file-item .status { flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+  .file-item .status { flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
   .file-item.running .status { background: var(--accent); animation: pulse 1s infinite; }
-  .file-item.done .status { background: #4ade80; }
-  .file-item.error .status { background: var(--danger); }
-
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .file-item.done    .status { background: var(--ok); }
+  .file-item.error   .status { background: var(--danger); }
+  .file-item.retry   .status { background: var(--warn); animation: pulse 0.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.2} }
 
   .btn {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 11px 18px; border-radius: var(--radius); border: none;
+    padding: 10px 18px; border-radius: var(--radius); border: none;
     font-family: 'IBM Plex Mono', monospace; font-size: 12px; cursor: pointer;
     transition: opacity .15s, transform .1s; letter-spacing: 0.04em; width: 100%;
   }
@@ -160,15 +94,19 @@
   .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
   .btn-ghost:hover:not(:disabled) { border-color: var(--text-dim); color: var(--text); }
 
-  .main { display: flex; flex-direction: column; overflow: hidden; }
+  .progress-bar { height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 1px; transition: width .5s ease; }
 
-  .tabs {
-    display: flex; border-bottom: 1px solid var(--border);
-    padding: 0 24px; overflow-x: auto;
+  .divider { border: none; border-top: 1px solid var(--border); }
+  .section-label {
+    font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 10px; display: block;
   }
 
+  .main { display: flex; flex-direction: column; overflow: hidden; }
+  .tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 24px; }
   .tab {
-    padding: 14px 18px; font-size: 11px; cursor: pointer; color: var(--text-dim);
+    padding: 13px 18px; font-size: 11px; cursor: pointer; color: var(--text-dim);
     border-bottom: 2px solid transparent; white-space: nowrap; transition: color .15s;
     background: none; border-top: none; border-left: none; border-right: none;
     font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.06em;
@@ -181,75 +119,53 @@
 
   .output-card {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); margin-bottom: 20px; overflow: hidden;
+    border-radius: var(--radius); margin-bottom: 18px; overflow: hidden;
   }
-
   .output-card-header {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; gap: 10px;
     padding: 10px 16px; border-bottom: 1px solid var(--border);
     background: rgba(255,255,255,.02);
   }
-
   .output-card-header .title { font-size: 11px; color: var(--accent); letter-spacing: .08em; }
-  .output-card-header .actions { display: flex; gap: 8px; }
-
+  .output-card-header .meta { font-size: 10px; color: var(--text-dim); }
+  .output-card-header .actions { display: flex; gap: 8px; margin-left: auto; }
   .copy-btn, .dl-btn {
     background: none; border: 1px solid var(--border); border-radius: 4px;
     color: var(--text-dim); font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-    padding: 4px 10px; cursor: pointer; transition: all .15s; letter-spacing: .05em;
+    padding: 4px 10px; cursor: pointer; transition: all .15s;
   }
   .copy-btn:hover, .dl-btn:hover { border-color: var(--accent-dim); color: var(--accent); }
-
   .output-content {
-    padding: 18px 20px; font-size: 12px; line-height: 1.75;
-    white-space: pre-wrap; word-break: break-word;
-    max-height: 500px; overflow-y: auto;
+    padding: 16px 20px; font-size: 12px; line-height: 1.75;
+    white-space: pre-wrap; word-break: break-word; max-height: 480px; overflow-y: auto;
   }
 
   .empty-state {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 300px; gap: 12px; color: var(--text-dim);
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; height: 260px; gap: 12px; color: var(--text-dim);
   }
-  .empty-state .big { font-size: 40px; }
+  .empty-state .big { font-size: 36px; }
 
-  .log-line { font-size: 11px; line-height: 1.8; }
+  .log-line { font-size: 11px; line-height: 1.9; }
   .log-line.info { color: var(--text-dim); }
-  .log-line.ok   { color: #4ade80; }
+  .log-line.ok   { color: var(--ok); }
   .log-line.err  { color: var(--danger); }
-  .log-line.warn { color: #fbbf24; }
-  .log-line .ts  { color: #555; margin-right: 10px; }
+  .log-line.warn { color: var(--warn); }
+  .log-line .ts  { color: #444; margin-right: 10px; user-select: none; }
 
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  .progress-bar { height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 1px; transition: width .4s ease; }
-
-  .section-label {
-    font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
-    color: var(--text-dim); margin-bottom: 10px; display: block;
-  }
-  .divider { border: none; border-top: 1px solid var(--border); }
-
-  .token-info {
-    font-size: 10px; color: var(--text-dim);
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 8px 12px; line-height: 1.7;
-  }
-  .token-info strong { color: var(--accent); }
 </style>
 </head>
 <body>
 
 <header>
   <h1>PDF <span>→</span> Markdown</h1>
-  <small>powered by Gemini 3.1 Flash Lite · uso locale</small>
+  <small>Gemini · retry automatico · pausa configurabile</small>
 </header>
 
 <div class="container">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
 
     <div class="field">
@@ -260,22 +176,27 @@
     <div class="field">
       <label>Modello</label>
       <select id="model">
-        <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (veloce, economico)</option>
+        <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
         <option value="gemini-3.1-flash">gemini-3.1-flash</option>
         <option value="gemini-2.5-flash-preview-05-20">gemini-2.5-flash-preview</option>
         <option value="gemini-2.5-pro-preview-06-05">gemini-2.5-pro-preview</option>
       </select>
     </div>
 
-    <div class="token-info">
-      <strong>gemini-3.1-flash-lite</strong><br>
-      Input: 1.048.576 token · Output: 65.536 token<br>
-      Supporta PDF nativo ✓
+    <div class="row">
+      <div class="field">
+        <label>Retry max</label>
+        <input type="number" id="maxRetries" value="3" min="1" max="5">
+      </div>
+      <div class="field">
+        <label>Pausa tra file (s)</label>
+        <input type="number" id="pauseSec" value="5" min="0" max="60">
+      </div>
     </div>
 
     <div class="field">
       <label>Prompt</label>
-      <textarea id="systemPrompt">Sei un assistente accademico. Ti viene fornito un capitolo di un manuale universitario in italiano. Convertilo in Markdown ben strutturato, preservando fedelmente tutto il contenuto originale. Usa # per il titolo del capitolo, ## per le sezioni numerate, ### per i sotto-paragrafi con titolo. Metti i termini tecnici in corsivo (*termine*) e i concetti chiave in grassetto (**concetto**). Non omettere nulla, non aggiungere nulla. Non aggiungere introduzioni o conclusioni tue. Output solo Markdown puro.</textarea>
+      <textarea id="systemPrompt">Sei un assistente accademico. Ti viene fornito un capitolo di un manuale universitario in italiano. Convertilo in Markdown ben strutturato, preservando fedelmente tutto il contenuto originale. Usa # per il titolo del capitolo, ## per le sezioni numerate, ### per i sotto-paragrafi con titolo. Metti i termini tecnici in corsivo (*termine*) e i concetti chiave in grassetto (**concetto**). Non omettere nulla, non aggiungere nulla. Output solo Markdown puro, senza blocchi di codice o backtick.</textarea>
     </div>
 
     <hr class="divider">
@@ -285,33 +206,27 @@
       <div class="dropzone" id="dropzone">
         <input type="file" id="fileInput" accept=".pdf" multiple>
         <span class="icon">📄</span>
-        <p><strong>Trascina i PDF qui</strong><br>o clicca per selezionare<br><small style="color:#555">(anche più capitoli insieme)</small></p>
+        <p><strong>Trascina i PDF qui</strong><br>o clicca per selezionare</p>
       </div>
     </div>
 
     <div id="fileList" class="file-list" style="display:none"></div>
 
-    <div style="display:flex; flex-direction:column; gap:8px; margin-top:auto">
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:auto">
       <div class="progress-bar" id="progressBar" style="display:none">
         <div class="progress-fill" id="progressFill" style="width:0%"></div>
       </div>
-      <button class="btn btn-primary" id="runBtn" onclick="processAll()">
-        ▶ &nbsp;Converti tutto
-      </button>
-      <button class="btn btn-ghost" id="dlAllBtn" onclick="downloadAll()" style="display:none">
-        ↓ &nbsp;Scarica tutti i .md
-      </button>
+      <button class="btn btn-primary" id="runBtn" onclick="processAll()">▶ &nbsp;Converti tutto</button>
+      <button class="btn btn-ghost" id="dlAllBtn" onclick="downloadAll()" style="display:none">↓ &nbsp;Scarica tutti i .md</button>
     </div>
 
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('output', this)">OUTPUT</button>
-      <button class="tab" onclick="switchTab('log', this)">LOG</button>
+      <button class="tab active" onclick="switchTab('output',this)">OUTPUT</button>
+      <button class="tab" onclick="switchTab('log',this)">LOG</button>
     </div>
-
     <div class="panel active" id="panel-output">
       <div id="emptyState" class="empty-state">
         <span class="big">🗒️</span>
@@ -319,12 +234,10 @@
       </div>
       <div id="outputCards"></div>
     </div>
-
     <div class="panel" id="panel-log">
       <div id="logContent"></div>
     </div>
   </main>
-
 </div>
 
 <script>
@@ -334,12 +247,10 @@ let results = {};
 // ── File handling ──────────────────────────────────────
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
-
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
 dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
 dropzone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropzone.classList.remove('drag-over');
+  e.preventDefault(); dropzone.classList.remove('drag-over');
   addFiles([...e.dataTransfer.files].filter(f => f.type === 'application/pdf'));
 });
 fileInput.addEventListener('change', () => { addFiles([...fileInput.files]); fileInput.value = ''; });
@@ -348,14 +259,11 @@ function addFiles(newFiles) {
   newFiles.forEach(f => { if (!files.find(x => x.name === f.name)) files.push(f); });
   renderFileList();
 }
-
 function removeFile(name) {
   files = files.filter(f => f.name !== name);
   delete results[name];
-  renderFileList();
-  renderOutputCards();
+  renderFileList(); renderOutputCards();
 }
-
 function renderFileList() {
   const list = document.getElementById('fileList');
   if (!files.length) { list.style.display = 'none'; return; }
@@ -363,13 +271,11 @@ function renderFileList() {
   list.innerHTML = files.map(f => `
     <div class="file-item pending" id="fi-${CSS.escape(f.name)}">
       <span class="status"></span>
-      <span class="fname" title="${escapeHtml(f.name)}">${escapeHtml(f.name)}</span>
+      <span class="fname" title="${esc(f.name)}">${esc(f.name)}</span>
       <span class="fsize">${(f.size/1024).toFixed(0)}k</span>
-      <button class="remove" onclick="removeFile('${escapeHtml(f.name)}')" title="Rimuovi">×</button>
-    </div>
-  `).join('');
+      <button class="remove" onclick="removeFile('${esc(f.name)}')">×</button>
+    </div>`).join('');
 }
-
 function setFileStatus(name, status) {
   const el = document.getElementById('fi-' + CSS.escape(name));
   if (el) el.className = 'file-item ' + status;
@@ -387,11 +293,13 @@ function switchTab(panel, btn) {
 function log(msg, type = 'info') {
   const el = document.getElementById('logContent');
   const ts = new Date().toLocaleTimeString('it-IT');
-  el.innerHTML += `<div class="log-line ${type}"><span class="ts">${ts}</span>${escapeHtml(msg)}</div>`;
+  el.innerHTML += `<div class="log-line ${type}"><span class="ts">${ts}</span>${esc(msg)}</div>`;
   el.scrollTop = el.scrollHeight;
 }
 
-// ── Base64 ─────────────────────────────────────────────
+// ── Utils ──────────────────────────────────────────────
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 function fileToBase64(file) {
   return new Promise((res, rej) => {
     const reader = new FileReader();
@@ -401,72 +309,114 @@ function fileToBase64(file) {
   });
 }
 
-// ── Gemini API call ────────────────────────────────────
-async function callGemini(apiKey, model, systemPrompt, b64pdf, filename) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 
-  const body = {
-    system_instruction: {
-      parts: [{ text: systemPrompt }]
-    },
-    contents: [{
-      role: 'user',
-      parts: [
-        {
-          inline_data: {
-            mime_type: 'application/pdf',
-            data: b64pdf
-          }
-        },
-        {
-          text: `Converti questo capitolo PDF in Markdown strutturato come da istruzioni di sistema. File: ${filename}`
-        }
-      ]
-    }],
-    generationConfig: {
-      maxOutputTokens: 65536,
-      temperature: 0.1
-    }
-  };
+// ── Singola chiamata Gemini ────────────────────────────
+async function callGeminiOnce(apiKey, model, systemPrompt, b64pdf, filename) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
   const resp = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: [{
+        role: 'user',
+        parts: [
+          { inline_data: { mime_type: 'application/pdf', data: b64pdf } },
+          { text: `Converti questo capitolo in Markdown strutturato. File: ${filename}` }
+        ]
+      }],
+      generationConfig: { maxOutputTokens: 65536, temperature: 0.1 }
+    })
   });
 
+  // Errore HTTP
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
     const msg = err.error?.message || `HTTP ${resp.status}`;
-    throw new Error(msg);
+    const e = new Error(msg);
+    // 503 = sovraccarico, 429 = rate limit, 500 = errore server → tutti ritentabili
+    e.retryable = [429, 500, 503].includes(resp.status);
+    e.status = resp.status;
+    throw e;
   }
 
   const data = await resp.json();
 
-  // Estrai testo dalla risposta Gemini
-  const text = data.candidates?.[0]?.content?.parts
-    ?.filter(p => p.text)
-    ?.map(p => p.text)
-    ?.join('') || '';
-
-  if (!text) throw new Error('Risposta vuota dal modello');
-
-  // Token usage log
+  // Log token usage
   const usage = data.usageMetadata;
   if (usage) {
-    log(`  Token usati — input: ${usage.promptTokenCount ?? '?'}, output: ${usage.candidatesTokenCount ?? '?'}`, 'info');
+    log(`  Token → input: ${usage.promptTokenCount ?? '?'} · output: ${usage.candidatesTokenCount ?? '?'}`, 'info');
+  }
+
+  // Controlla finish_reason
+  const candidate = data.candidates?.[0];
+  const finishReason = candidate?.finishReason;
+
+  if (finishReason && finishReason !== 'STOP' && finishReason !== 'MAX_TOKENS') {
+    // SAFETY, RECITATION, ecc. — non ritentare
+    const e = new Error(`Risposta bloccata dal modello: ${finishReason}`);
+    e.retryable = false;
+    throw e;
+  }
+
+  if (finishReason === 'MAX_TOKENS') {
+    log(`  ⚠ Output troncato per limite token — capitolo molto lungo`, 'warn');
+  }
+
+  // Estrai testo
+  const text = candidate?.content?.parts
+    ?.filter(p => p.text)?.map(p => p.text)?.join('') || '';
+
+  if (!text) {
+    // Log raw per debug
+    log(`  Debug struttura risposta: ${JSON.stringify(data).slice(0, 400)}`, 'warn');
+    const e = new Error('Nessun testo nella risposta (finish_reason: ' + (finishReason || 'assente') + ')');
+    e.retryable = true;
+    throw e;
   }
 
   return text;
 }
 
-// ── Main loop ──────────────────────────────────────────
+// ── Chiamata con retry e backoff ───────────────────────
+async function callGemini(apiKey, model, systemPrompt, b64pdf, filename) {
+  const maxRetries = parseInt(document.getElementById('maxRetries').value) || 3;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await callGeminiOnce(apiKey, model, systemPrompt, b64pdf, filename);
+    } catch (err) {
+      const isLast = attempt === maxRetries;
+
+      if (!err.retryable || isLast) throw err;
+
+      // Backoff esponenziale: 10s, 20s, 30s
+      const waitSec = 10 * attempt;
+      log(`  ⚠ Tentativo ${attempt}/${maxRetries} fallito: ${err.message}`, 'warn');
+      log(`  Attendo ${waitSec}s prima di riprovare...`, 'warn');
+      setFileStatus(filename, 'retry');
+      await sleep(waitSec * 1000);
+      setFileStatus(filename, 'running');
+      log(`  → Retry ${attempt + 1}/${maxRetries}`, 'info');
+    }
+  }
+}
+
+// ── Loop principale ────────────────────────────────────
 async function processAll() {
   const apiKey    = document.getElementById('apiKey').value.trim();
   const model     = document.getElementById('model').value;
   const sysprompt = document.getElementById('systemPrompt').value.trim();
+  const pauseSec  = parseInt(document.getElementById('pauseSec').value) || 0;
+  const maxRetries = document.getElementById('maxRetries').value;
 
-  if (!apiKey) { alert('Inserisci la tua API Key Google AI.'); return; }
+  if (!apiKey)       { alert('Inserisci la tua API Key Google AI.'); return; }
   if (!files.length) { alert('Aggiungi almeno un file PDF.'); return; }
 
   const runBtn = document.getElementById('runBtn');
@@ -482,38 +432,44 @@ async function processAll() {
   document.getElementById('outputCards').innerHTML = '';
   results = {};
 
-  log(`Avvio elaborazione · ${files.length} file · modello: ${model}`, 'info');
+  log(`Avvio · ${files.length} file · ${model} · retry: ${maxRetries} · pausa: ${pauseSec}s`, 'info');
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    log(`→ ${file.name} (${(file.size/1024).toFixed(0)} KB)`, 'info');
+    log(`→ [${i+1}/${files.length}] ${file.name} (${(file.size/1024).toFixed(0)} KB)`, 'info');
     setFileStatus(file.name, 'running');
 
     try {
       const b64 = await fileToBase64(file);
-      log(`  PDF convertito in base64. Invio a Gemini...`, 'info');
+      log(`  PDF letto in base64. Invio a Gemini...`, 'info');
 
       const markdown = await callGemini(apiKey, model, sysprompt, b64, file.name);
 
       results[file.name] = markdown;
       setFileStatus(file.name, 'done');
-      log(`  ✓ Completato — ${markdown.length} caratteri generati`, 'ok');
+      const words = markdown.split(/\s+/).length;
+      log(`  ✓ Completato — ${words.toLocaleString()} parole · ${markdown.length.toLocaleString()} caratteri`, 'ok');
       appendOutputCard(file.name, markdown);
 
     } catch (err) {
       setFileStatus(file.name, 'error');
-      log(`  ✗ Errore: ${err.message}`, 'err');
+      log(`  ✗ Fallito definitivamente: ${err.message}`, 'err');
     }
 
     pf.style.width = `${((i + 1) / files.length) * 100}%`;
+
+    // Pausa tra file (non dopo l'ultimo)
+    if (pauseSec > 0 && i < files.length - 1) {
+      log(`  Pausa ${pauseSec}s...`, 'info');
+      await sleep(pauseSec * 1000);
+    }
   }
 
   const ok = Object.keys(results).length;
-  log(`Completato: ${ok}/${files.length} file convertiti`, ok === files.length ? 'ok' : 'warn');
+  log(`── Fine: ${ok}/${files.length} convertiti ──`, ok === files.length ? 'ok' : 'warn');
 
   runBtn.disabled = false;
   runBtn.textContent = '▶  Converti tutto';
-
   if (ok > 1) document.getElementById('dlAllBtn').style.display = 'flex';
 }
 
@@ -521,18 +477,20 @@ async function processAll() {
 function appendOutputCard(filename, markdown) {
   const container = document.getElementById('outputCards');
   const id = 'card-' + filename.replace(/[^a-z0-9]/gi, '_');
+  const words = markdown.split(/\s+/).length;
   const card = document.createElement('div');
   card.className = 'output-card';
   card.id = id;
   card.innerHTML = `
     <div class="output-card-header">
-      <span class="title">📄 ${escapeHtml(filename)}</span>
+      <span class="title">📄 ${esc(filename)}</span>
+      <span class="meta">${words.toLocaleString()} parole</span>
       <div class="actions">
         <button class="copy-btn" onclick="copyText('${id}')">Copia</button>
-        <button class="dl-btn" onclick="downloadMd('${escapeHtml(filename)}')">↓ .md</button>
+        <button class="dl-btn" onclick="downloadMd('${esc(filename)}')">↓ .md</button>
       </div>
     </div>
-    <div class="output-content" id="${id}-content">${escapeHtml(markdown)}</div>
+    <div class="output-content" id="${id}-content">${esc(markdown)}</div>
   `;
   container.appendChild(card);
 }
@@ -540,8 +498,7 @@ function appendOutputCard(filename, markdown) {
 function renderOutputCards() {
   document.getElementById('outputCards').innerHTML = '';
   if (!Object.keys(results).length) {
-    document.getElementById('emptyState').style.display = 'flex';
-    return;
+    document.getElementById('emptyState').style.display = 'flex'; return;
   }
   document.getElementById('emptyState').style.display = 'none';
   Object.entries(results).forEach(([fn, md]) => appendOutputCard(fn, md));
@@ -557,8 +514,7 @@ function copyText(cardId) {
 }
 
 function downloadMd(filename) {
-  const md = results[filename];
-  if (!md) return;
+  const md = results[filename]; if (!md) return;
   const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -566,15 +522,7 @@ function downloadMd(filename) {
   a.click();
 }
 
-function downloadAll() {
-  Object.keys(results).forEach(fn => downloadMd(fn));
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
+function downloadAll() { Object.keys(results).forEach(fn => downloadMd(fn)); }
 </script>
 </body>
 </html>
