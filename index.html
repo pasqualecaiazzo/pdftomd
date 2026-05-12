@@ -12,6 +12,7 @@
     --accent: #4db7ff; --accent-dim: #2a7aaa;
     --text: #e8e8e8; --text-dim: #777;
     --danger: #ff6b6b; --warn: #fbbf24; --ok: #4ade80;
+    --fallback: #c084fc;
     --radius: 6px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,12 +28,14 @@
   header h1 { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 300; letter-spacing: -0.5px; }
   header h1 span { color: var(--accent); font-style: italic; }
   header small { color: var(--text-dim); font-size: 11px; }
+
   .container { display: grid; grid-template-columns: 340px 1fr; flex: 1; min-height: 0; }
 
   .sidebar {
     border-right: 1px solid var(--border); padding: 24px;
     display: flex; flex-direction: column; gap: 18px; overflow-y: auto;
   }
+
   .field label {
     display: block; color: var(--text-dim); font-size: 10px;
     letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px;
@@ -49,20 +52,28 @@
   .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent-dim); }
   .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
   .field select option { background: #1a1a1a; }
+
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .info-box {
+    font-size: 10px; color: var(--text-dim); background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 8px 12px; line-height: 1.8;
+  }
+  .info-box strong { color: var(--fallback); }
 
   .dropzone {
     border: 1.5px dashed var(--border); border-radius: var(--radius);
     padding: 20px 16px; text-align: center; cursor: pointer;
     transition: border-color 0.2s, background 0.2s; position: relative;
   }
-  .dropzone:hover, .dropzone.drag-over { border-color: var(--accent); background: rgba(77,183,255,0.04); }
+  .dropzone:hover, .dropzone.drag-over { border-color: var(--accent); background: rgba(77,183,255,.04); }
   .dropzone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
   .dropzone .icon { font-size: 24px; margin-bottom: 6px; display: block; }
   .dropzone p { color: var(--text-dim); font-size: 11px; line-height: 1.6; }
   .dropzone p strong { color: var(--text); }
 
-  .file-list { display: flex; flex-direction: column; gap: 5px; max-height: 220px; overflow-y: auto; }
+  .file-list { display: flex; flex-direction: column; gap: 5px; max-height: 210px; overflow-y: auto; }
   .file-item {
     display: flex; align-items: center; gap: 8px; background: var(--surface);
     border: 1px solid var(--border); border-radius: var(--radius); padding: 7px 10px; font-size: 11px;
@@ -75,10 +86,10 @@
   }
   .file-item .remove:hover { color: var(--danger); }
   .file-item .status { flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
-  .file-item.running .status { background: var(--accent); animation: pulse 1s infinite; }
-  .file-item.done    .status { background: var(--ok); }
-  .file-item.error   .status { background: var(--danger); }
-  .file-item.retry   .status { background: var(--warn); animation: pulse 0.5s infinite; }
+  .file-item.running  .status { background: var(--accent);   animation: pulse 1s infinite; }
+  .file-item.done     .status { background: var(--ok); }
+  .file-item.error    .status { background: var(--danger); }
+  .file-item.fallback .status { background: var(--fallback); animation: pulse 0.8s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.2} }
 
   .btn {
@@ -128,6 +139,10 @@
   }
   .output-card-header .title { font-size: 11px; color: var(--accent); letter-spacing: .08em; }
   .output-card-header .meta { font-size: 10px; color: var(--text-dim); }
+  .output-card-header .badge {
+    font-size: 9px; background: rgba(192,132,252,.15); color: var(--fallback);
+    border: 1px solid rgba(192,132,252,.3); border-radius: 3px; padding: 2px 6px;
+  }
   .output-card-header .actions { display: flex; gap: 8px; margin-left: auto; }
   .copy-btn, .dl-btn {
     background: none; border: 1px solid var(--border); border-radius: 4px;
@@ -151,6 +166,7 @@
   .log-line.ok   { color: var(--ok); }
   .log-line.err  { color: var(--danger); }
   .log-line.warn { color: var(--warn); }
+  .log-line.fallback { color: var(--fallback); }
   .log-line .ts  { color: #444; margin-right: 10px; user-select: none; }
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -162,7 +178,7 @@
 
 <header>
   <h1>PDF <span>→</span> Markdown</h1>
-  <small>Gemini · retry automatico · pausa configurabile</small>
+  <small>Gemini · fallback automatico su gemini-2.5-flash</small>
 </header>
 
 <div class="container">
@@ -174,24 +190,23 @@
     </div>
 
     <div class="field">
-      <label>Modello</label>
+      <label>Modello primario</label>
       <select id="model">
         <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
         <option value="gemini-3.1-flash">gemini-3.1-flash</option>
-        <option value="gemini-2.5-flash-preview-05-20">gemini-2.5-flash-preview</option>
-        <option value="gemini-2.5-pro-preview-06-05">gemini-2.5-pro-preview</option>
+        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+        <option value="gemini-2.5-pro">gemini-2.5-pro</option>
       </select>
     </div>
 
-    <div class="row">
-      <div class="field">
-        <label>Retry max</label>
-        <input type="number" id="maxRetries" value="3" min="1" max="5">
-      </div>
-      <div class="field">
-        <label>Pausa tra file (s)</label>
-        <input type="number" id="pauseSec" value="5" min="0" max="60">
-      </div>
+    <div class="info-box">
+      <strong>Fallback automatico</strong><br>
+      Se il modello primario fallisce per qualsiasi motivo, riprova automaticamente con <strong>gemini-2.5-flash</strong>.
+    </div>
+
+    <div class="field">
+      <label>Pausa tra file (secondi)</label>
+      <input type="number" id="pauseSec" value="3" min="0" max="60">
     </div>
 
     <div class="field">
@@ -241,12 +256,15 @@
 </div>
 
 <script>
+const FALLBACK_MODEL = 'gemini-2.5-flash';
+
 let files = [];
-let results = {};
+let results = {}; // { filename: { text, model } }
 
 // ── File handling ──────────────────────────────────────
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
+
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
 dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
 dropzone.addEventListener('drop', e => {
@@ -262,17 +280,18 @@ function addFiles(newFiles) {
 function removeFile(name) {
   files = files.filter(f => f.name !== name);
   delete results[name];
-  renderFileList(); renderOutputCards();
+  renderFileList();
+  renderOutputCards();
 }
 function renderFileList() {
   const list = document.getElementById('fileList');
   if (!files.length) { list.style.display = 'none'; return; }
   list.style.display = 'flex';
   list.innerHTML = files.map(f => `
-    <div class="file-item pending" id="fi-${CSS.escape(f.name)}">
+    <div class="file-item" id="fi-${CSS.escape(f.name)}">
       <span class="status"></span>
       <span class="fname" title="${esc(f.name)}">${esc(f.name)}</span>
-      <span class="fsize">${(f.size/1024).toFixed(0)}k</span>
+      <span class="fsize">${(f.size / 1024).toFixed(0)}k</span>
       <button class="remove" onclick="removeFile('${esc(f.name)}')">×</button>
     </div>`).join('');
 }
@@ -297,7 +316,7 @@ function log(msg, type = 'info') {
   el.scrollTop = el.scrollHeight;
 }
 
-// ── Utils ──────────────────────────────────────────────
+// ── Utilities ──────────────────────────────────────────
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 function fileToBase64(file) {
@@ -311,37 +330,42 @@ function fileToBase64(file) {
 
 function esc(s) {
   return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // ── Singola chiamata Gemini ────────────────────────────
 async function callGeminiOnce(apiKey, model, systemPrompt, b64pdf, filename) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: [{
-        role: 'user',
-        parts: [
-          { inline_data: { mime_type: 'application/pdf', data: b64pdf } },
-          { text: `Converti questo capitolo in Markdown strutturato. File: ${filename}` }
-        ]
-      }],
-      generationConfig: { maxOutputTokens: 65536, temperature: 0.1 }
-    })
-  });
+  let resp;
+  try {
+    resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{
+          role: 'user',
+          parts: [
+            { inline_data: { mime_type: 'application/pdf', data: b64pdf } },
+            { text: `Converti questo capitolo in Markdown strutturato. File: ${filename}` }
+          ]
+        }],
+        generationConfig: { maxOutputTokens: 65536, temperature: 0.1 }
+      })
+    });
+  } catch (networkErr) {
+    // Errore di rete (CORS su risposta errore, timeout, ecc.)
+    const e = new Error(`Errore di rete: ${networkErr.message}`);
+    e.retryable = true;
+    throw e;
+  }
 
-  // Errore HTTP
   if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    const msg = err.error?.message || `HTTP ${resp.status}`;
+    let msg = `HTTP ${resp.status}`;
+    try { const body = await resp.json(); msg = body.error?.message || msg; } catch (_) {}
     const e = new Error(msg);
-    // 503 = sovraccarico, 429 = rate limit, 500 = errore server → tutti ritentabili
-    e.retryable = [429, 500, 503].includes(resp.status);
     e.status = resp.status;
     throw e;
   }
@@ -350,60 +374,47 @@ async function callGeminiOnce(apiKey, model, systemPrompt, b64pdf, filename) {
 
   // Log token usage
   const usage = data.usageMetadata;
-  if (usage) {
-    log(`  Token → input: ${usage.promptTokenCount ?? '?'} · output: ${usage.candidatesTokenCount ?? '?'}`, 'info');
-  }
+  if (usage) log(`  Token → input: ${usage.promptTokenCount ?? '?'} · output: ${usage.candidatesTokenCount ?? '?'}`, 'info');
 
   // Controlla finish_reason
   const candidate = data.candidates?.[0];
   const finishReason = candidate?.finishReason;
-
   if (finishReason && finishReason !== 'STOP' && finishReason !== 'MAX_TOKENS') {
-    // SAFETY, RECITATION, ecc. — non ritentare
-    const e = new Error(`Risposta bloccata dal modello: ${finishReason}`);
-    e.retryable = false;
-    throw e;
+    throw new Error(`Risposta bloccata: ${finishReason}`);
   }
+  if (finishReason === 'MAX_TOKENS') log('  ⚠ Output troncato per limite token', 'warn');
 
-  if (finishReason === 'MAX_TOKENS') {
-    log(`  ⚠ Output troncato per limite token — capitolo molto lungo`, 'warn');
-  }
-
-  // Estrai testo
-  const text = candidate?.content?.parts
-    ?.filter(p => p.text)?.map(p => p.text)?.join('') || '';
-
+  const text = candidate?.content?.parts?.filter(p => p.text)?.map(p => p.text)?.join('') || '';
   if (!text) {
-    // Log raw per debug
-    log(`  Debug struttura risposta: ${JSON.stringify(data).slice(0, 400)}`, 'warn');
-    const e = new Error('Nessun testo nella risposta (finish_reason: ' + (finishReason || 'assente') + ')');
-    e.retryable = true;
-    throw e;
+    log(`  Debug: ${JSON.stringify(data).slice(0, 300)}`, 'warn');
+    throw new Error('Nessun testo nella risposta');
   }
 
   return text;
 }
 
-// ── Chiamata con retry e backoff ───────────────────────
-async function callGemini(apiKey, model, systemPrompt, b64pdf, filename) {
-  const maxRetries = parseInt(document.getElementById('maxRetries').value) || 3;
+// ── Chiamata con fallback automatico ──────────────────
+async function callGemini(apiKey, primaryModel, systemPrompt, b64pdf, filename) {
+  const modelsToTry = primaryModel === FALLBACK_MODEL
+    ? [primaryModel]
+    : [primaryModel, FALLBACK_MODEL];
 
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+  for (let i = 0; i < modelsToTry.length; i++) {
+    const model = modelsToTry[i];
+    const isFallback = i > 0;
+
+    if (isFallback) {
+      log(`  ↪ Fallback su ${model}`, 'fallback');
+      setFileStatus(filename, 'fallback');
+    }
+
     try {
-      return await callGeminiOnce(apiKey, model, systemPrompt, b64pdf, filename);
+      const text = await callGeminiOnce(apiKey, model, systemPrompt, b64pdf, filename);
+      return { text, model }; // restituisce anche quale modello ha risposto
     } catch (err) {
-      const isLast = attempt === maxRetries;
-
-      if (!err.retryable || isLast) throw err;
-
-      // Backoff esponenziale: 10s, 20s, 30s
-      const waitSec = 10 * attempt;
-      log(`  ⚠ Tentativo ${attempt}/${maxRetries} fallito: ${err.message}`, 'warn');
-      log(`  Attendo ${waitSec}s prima di riprovare...`, 'warn');
-      setFileStatus(filename, 'retry');
-      await sleep(waitSec * 1000);
-      setFileStatus(filename, 'running');
-      log(`  → Retry ${attempt + 1}/${maxRetries}`, 'info');
+      const isLast = i === modelsToTry.length - 1;
+      if (isLast) throw err;
+      log(`  ✗ ${model} fallito (${err.message})`, 'warn');
     }
   }
 }
@@ -414,7 +425,6 @@ async function processAll() {
   const model     = document.getElementById('model').value;
   const sysprompt = document.getElementById('systemPrompt').value.trim();
   const pauseSec  = parseInt(document.getElementById('pauseSec').value) || 0;
-  const maxRetries = document.getElementById('maxRetries').value;
 
   if (!apiKey)       { alert('Inserisci la tua API Key Google AI.'); return; }
   if (!files.length) { alert('Aggiungi almeno un file PDF.'); return; }
@@ -432,33 +442,33 @@ async function processAll() {
   document.getElementById('outputCards').innerHTML = '';
   results = {};
 
-  log(`Avvio · ${files.length} file · ${model} · retry: ${maxRetries} · pausa: ${pauseSec}s`, 'info');
+  log(`Avvio · ${files.length} file · ${model} · pausa: ${pauseSec}s`, 'info');
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    log(`→ [${i+1}/${files.length}] ${file.name} (${(file.size/1024).toFixed(0)} KB)`, 'info');
+    log(`→ [${i + 1}/${files.length}] ${file.name} (${(file.size / 1024).toFixed(0)} KB)`, 'info');
     setFileStatus(file.name, 'running');
 
     try {
       const b64 = await fileToBase64(file);
-      log(`  PDF letto in base64. Invio a Gemini...`, 'info');
+      log(`  PDF letto. Invio a Gemini...`, 'info');
 
-      const markdown = await callGemini(apiKey, model, sysprompt, b64, file.name);
+      const { text, model: usedModel } = await callGemini(apiKey, model, sysprompt, b64, file.name);
 
-      results[file.name] = markdown;
+      results[file.name] = { text, model: usedModel };
       setFileStatus(file.name, 'done');
-      const words = markdown.split(/\s+/).length;
-      log(`  ✓ Completato — ${words.toLocaleString()} parole · ${markdown.length.toLocaleString()} caratteri`, 'ok');
-      appendOutputCard(file.name, markdown);
+      const words = text.split(/\s+/).length;
+      const note = usedModel !== model ? ` [via ${usedModel}]` : '';
+      log(`  ✓ Completato${note} — ${words.toLocaleString()} parole`, 'ok');
+      appendOutputCard(file.name, text, usedModel !== model ? usedModel : null);
 
     } catch (err) {
       setFileStatus(file.name, 'error');
-      log(`  ✗ Fallito definitivamente: ${err.message}`, 'err');
+      log(`  ✗ Fallito: ${err.message}`, 'err');
     }
 
     pf.style.width = `${((i + 1) / files.length) * 100}%`;
 
-    // Pausa tra file (non dopo l'ultimo)
     if (pauseSec > 0 && i < files.length - 1) {
       log(`  Pausa ${pauseSec}s...`, 'info');
       await sleep(pauseSec * 1000);
@@ -467,23 +477,26 @@ async function processAll() {
 
   const ok = Object.keys(results).length;
   log(`── Fine: ${ok}/${files.length} convertiti ──`, ok === files.length ? 'ok' : 'warn');
-
   runBtn.disabled = false;
   runBtn.textContent = '▶  Converti tutto';
   if (ok > 1) document.getElementById('dlAllBtn').style.display = 'flex';
 }
 
-// ── Output ─────────────────────────────────────────────
-function appendOutputCard(filename, markdown) {
+// ── Output cards ───────────────────────────────────────
+function appendOutputCard(filename, markdown, fallbackModel) {
   const container = document.getElementById('outputCards');
   const id = 'card-' + filename.replace(/[^a-z0-9]/gi, '_');
   const words = markdown.split(/\s+/).length;
   const card = document.createElement('div');
   card.className = 'output-card';
   card.id = id;
+  const badge = fallbackModel
+    ? `<span class="badge">via ${esc(fallbackModel)}</span>`
+    : '';
   card.innerHTML = `
     <div class="output-card-header">
       <span class="title">📄 ${esc(filename)}</span>
+      ${badge}
       <span class="meta">${words.toLocaleString()} parole</span>
       <div class="actions">
         <button class="copy-btn" onclick="copyText('${id}')">Copia</button>
@@ -501,7 +514,9 @@ function renderOutputCards() {
     document.getElementById('emptyState').style.display = 'flex'; return;
   }
   document.getElementById('emptyState').style.display = 'none';
-  Object.entries(results).forEach(([fn, md]) => appendOutputCard(fn, md));
+  Object.entries(results).forEach(([fn, r]) =>
+    appendOutputCard(fn, r.text, r.model !== document.getElementById('model').value ? r.model : null)
+  );
 }
 
 function copyText(cardId) {
@@ -514,8 +529,8 @@ function copyText(cardId) {
 }
 
 function downloadMd(filename) {
-  const md = results[filename]; if (!md) return;
-  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const r = results[filename]; if (!r) return;
+  const blob = new Blob([r.text], { type: 'text/markdown;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = filename.replace(/\.pdf$/i, '') + '.md';
